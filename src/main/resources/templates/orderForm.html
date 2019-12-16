@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test home</title>
+</head>
+<body>
+    <h1>Order form: </h1>
+
+    <a th:href="@{/design}">Выбери другой тако, сволоч ты нерешительная</a>
+
+    <form method="POST">
+
+        <div>
+            <p>Name: </p>
+            <input type="text" name="name">
+        </div>
+
+        <div>
+            <p>Street: </p>
+            <input type="text" name="street">
+        </div>
+
+        <div>
+            <p>City: </p>
+            <input type="text" name="city">
+        </div>
+
+        <button type="submit">Отправить заказ</button>
+
+    </form>
+</body>
+</html>

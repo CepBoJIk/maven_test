@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+    </head>
+    <body>
+    <h1>Design</h1>
+
+    <form method="POST" th:object="${design}">
+
+        <h2>Ingredients: </h2>
+
+        <h3>Wraps: </h3>
+
+        <div th:each="ingredient: ${wrap}">
+            <input type="checkbox" name="ingredients" th:value="${ingredient.id}">
+            <span th:text="${ingredient.name}">INGREDIENT</span>
+        </div>
+
+        <h3>Proteins: </h3>
+
+        <div th:each="ingredient: ${protein}">
+            <input type="checkbox" name="ingredients" th:value="${ingredient.id}">
+            <span th:text="${ingredient.name}">INGREDIENT</span>
+        </div>
+
+        <h3>Veggies: </h3>
+
+        <div th:each="ingredient: ${veggies}">
+            <input type="checkbox" name="ingredients" th:value="${ingredient.id}">
+            <span th:text="${ingredient.name}">INGREDIENT</span>
+        </div>
+
+        <h3>Cheese: </h3>
+
+        <div th:each="ingredient: ${cheese}">
+            <input type="checkbox" name="ingredients" th:value="${ingredient.id}">
+            <span th:text="${ingredient.name}">INGREDIENT</span>
+        </div>
+
+        <h3>Sauce: </h3>
+
+        <div th:each="ingredient: ${sauce}">
+            <input type="checkbox" name="ingredients" th:value="${ingredient.id}">
+            <span th:text="${ingredient.name}">INGREDIENT</span>
+        </div>
+
+        <h3>Name your taco</h3>
+        <input type="text" name="name">
+
+        <button type="submit">Submit your taco</button>
+
+    </form>
+
+    </body>
+</html>
