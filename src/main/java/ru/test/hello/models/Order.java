@@ -3,7 +3,9 @@ package ru.test.hello.models;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class Order {
@@ -19,4 +21,10 @@ public class Order {
 
     @NotBlank(message = "Введите город")
     private String city;
+
+    private List<Taco> design = new ArrayList<>();
+
+    public void addDesign(Taco taco) {
+        design.add(taco);
+    }
 }

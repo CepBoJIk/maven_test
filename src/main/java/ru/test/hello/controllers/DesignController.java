@@ -5,30 +5,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.test.hello.interfaces.IngredientRepository;
 import ru.test.hello.interfaces.TacoRepository;
 import ru.test.hello.models.Ingredient;
 import ru.test.hello.models.Ingredient.Type;
+import ru.test.hello.models.Order;
 import ru.test.hello.models.Taco;
 import ru.test.hello.models.ValidationError;
 import ru.test.hello.helpers.Helpers;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
 @RequestMapping("/design")
+@SessionAttributes("order")
 public class DesignController {
 
     private final IngredientRepository ingredientRepository;
     private final TacoRepository tacoRepository;
+
+    @ModelAttribute(name = "order")
+    public Order order() {
+        return new Order();
+    }
 
     @Autowired
     public DesignController(IngredientRepository ingredientRepository, TacoRepository tacoRepository) {
@@ -47,12 +51,15 @@ public class DesignController {
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
         }
 
+        log.info("ingredients: " + ingredients);
+
+        model.addAttribute("design", new Taco());
+
         return "design";
     }
 
     @PostMapping
-    public String processDesign(@Valid Taco design, Errors errors) {
-        log.info(design.toString() + " - TACO!!!!");
+    public String processDesign(@Valid Taco design, Errors errors, @ModelAttribute Order order) {
 
         if (errors.hasErrors()) {
             List<ValidationError> errorsList = Helpers.getValidationErrors(errors);
@@ -60,9 +67,9 @@ public class DesignController {
             log.info("Error in form, data: " + design + ", error: " + errorsList);
             return "redirect:/design";
         }
-        Taco taco = this.tacoRepository.save(design); // ???????
+        Taco taco = this.tacoRepository.save(design);
 
-        log.info(taco.toString());
+        order.addDesign(taco);
 
         return "redirect:/orders/current";
     }

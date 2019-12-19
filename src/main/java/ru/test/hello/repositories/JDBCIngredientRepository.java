@@ -8,6 +8,8 @@ import ru.test.hello.models.Ingredient;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class JDBCIngredientRepository implements IngredientRepository {
@@ -23,6 +25,24 @@ public class JDBCIngredientRepository implements IngredientRepository {
     public Iterable<Ingredient> findAll() {
         return jdbc.query(
                 "select id, name, type from Ingredient",
+                this::mapRowToIngredient
+        );
+    }
+
+    public List<Ingredient> findAll(List<String> idList) {
+        String sqlString = "select id, name, type from Ingredient";
+
+        if (idList.size() > 0) {
+            sqlString += " where ";
+        }
+
+        sqlString += idList
+                .stream()
+                .map(id -> "id='" + id + "'")
+                .collect(Collectors.joining(" or "));
+
+        return jdbc.query(
+                sqlString,
                 this::mapRowToIngredient
         );
     }

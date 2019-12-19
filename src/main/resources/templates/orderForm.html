@@ -7,6 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Test home</title>
 </head>
+
+<h3>Ваши тако:</h3>
+
+<div th:each="taco: ${tacos}">
+    <p th:text="${taco.name}" style="font-weight: bold">NAME</p>
+
+    <p>Ингредиенты:</p>
+
+    <ul>
+        <li th:each="ingredient: ${taco.ingredients}" th:text="${ingredient.name}"></li>
+    </ul>
+</div>
+
 <body>
     <h1>Order form: </h1>
 
