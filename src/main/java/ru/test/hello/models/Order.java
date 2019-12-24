@@ -2,13 +2,22 @@ package ru.test.hello.models;
 
 import lombok.Data;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Data
-public class Order {
+@Entity
+@Table(name = "Taco_Order")
+public class Order implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private Date placedAt;
@@ -22,9 +31,15 @@ public class Order {
     @NotBlank(message = "Введите город")
     private String city;
 
-    private List<Taco> design = new ArrayList<>();
+    @ManyToMany(targetEntity = Taco.class)
+    private List<Taco> tacos = new ArrayList<>();
 
     public void addDesign(Taco taco) {
-        design.add(taco);
+        tacos.add(taco);
+    }
+
+    @PrePersist
+    void placedAt() {
+        this.placedAt = new Date();
     }
 }

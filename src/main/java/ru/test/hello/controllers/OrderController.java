@@ -5,14 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import ru.test.hello.models.Order;
-import ru.test.hello.models.TacoWithIngredients;
-import ru.test.hello.models.ValidationError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 import ru.test.hello.helpers.Helpers;
-import ru.test.hello.repositories.JDBCTacoRepository;
+import ru.test.hello.models.Order;
+import ru.test.hello.models.Taco;
+import ru.test.hello.models.ValidationError;
+import ru.test.hello.repositories.OrderRepository;
+import ru.test.hello.repositories.TacoRepository;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,23 +20,27 @@ import java.util.List;
 @Slf4j
 @Controller
 @RequestMapping("/orders")
+@SessionAttributes("order")
 public class OrderController {
 
     @Autowired
-    private JDBCTacoRepository jdbcTacoRepository;
+    private TacoRepository tacoRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @GetMapping("current")
     public String orderForm(Model model) {
-        Iterable<TacoWithIngredients> tacos = jdbcTacoRepository.getTacos();
+        Iterable<Taco> tacos = tacoRepository.findAll();
 
-        model.addAttribute("order", new Order());
         model.addAttribute("tacos", tacos);
 
         return "orderForm";
     }
 
     @PostMapping("current")
-    public String processOrder(@Valid Order order, Errors errors) {
+    public String processOrder(@Valid Order order, Errors errors, SessionStatus sessionStatus, Model model) {
+        log.info("session attribute: " + model.getAttribute("order"));
         if (errors.hasErrors()) {
             List<ValidationError> validationErrors = Helpers.getValidationErrors(errors);
 
@@ -45,7 +49,13 @@ public class OrderController {
             return "redirect:/orders/current";
         }
 
-        log.info("Order submitted: " + order);
+        Order sessionOrder = (Order) model.getAttribute("order");
+        order.setTacos(sessionOrder.getTacos());
+
+        Order savedOrder = orderRepository.save(order);
+        log.info("order saved: " + savedOrder);
+        sessionStatus.setComplete();
+
         return "redirect:/";
     }
 

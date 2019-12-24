@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import ru.test.hello.interfaces.IngredientRepository;
-import ru.test.hello.interfaces.TacoRepository;
+import ru.test.hello.repositories.IngredientRepository;
+import ru.test.hello.repositories.TacoRepository;
 import ru.test.hello.models.Ingredient;
 import ru.test.hello.models.Ingredient.Type;
 import ru.test.hello.models.Order;
@@ -26,18 +26,15 @@ import java.util.stream.Collectors;
 @SessionAttributes("order")
 public class DesignController {
 
-    private final IngredientRepository ingredientRepository;
-    private final TacoRepository tacoRepository;
+    @Autowired
+    private IngredientRepository ingredientRepository;
+
+    @Autowired
+    private TacoRepository tacoRepository;
 
     @ModelAttribute(name = "order")
     public Order order() {
         return new Order();
-    }
-
-    @Autowired
-    public DesignController(IngredientRepository ingredientRepository, TacoRepository tacoRepository) {
-        this.ingredientRepository = ingredientRepository; // есть ли более короткая запись данной конструкции?
-        this.tacoRepository = tacoRepository;
     }
 
     @GetMapping
@@ -51,7 +48,7 @@ public class DesignController {
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
         }
 
-        log.info("ingredients: " + ingredients);
+        log.info("ingredients getted: " + ingredients);
 
         model.addAttribute("design", new Taco());
 
